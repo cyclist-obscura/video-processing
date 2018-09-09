@@ -10,6 +10,7 @@
 #    licence    : GPL v3.0
 #    further details from:
 #       https://support.google.com/youtube/answer/1722171?hl=en-GB
+#       https://melodiefabriek.com/blog/loudness/
 #
 ##################################################################
 
@@ -24,12 +25,12 @@ echo $MASTER_VIDEO $OUTPUT_VIDEO
 echo ""
 
 echo "Pass 1"
-ffmpeg -i $MASTER_VIDEO -pass 1 -vf scale=1920:1080:0 -sws_flags lanczos \
+ffmpeg -i $MASTER_VIDEO -pass 1 -vf scale=1920:1080:0 -sws_flags lanczos -af loudnorm=I=-13:TP=-1 \
  -c:v libx264 -b:v 18M -profile:v high -g 25 -bf 2 -b_strategy 2 -refs 8 \
  -me_method umh -me_range 128 -f mp4 -an /dev/null
 echo "##################################################################"
 echo "Pass 2"
-ffmpeg -i $MASTER_VIDEO -pass 1 -vf scale=1920:1080:0 -sws_flags lanczos \
+ffmpeg -i $MASTER_VIDEO -pass 1 -vf scale=1920:1080:0 -sws_flags lanczos -af loudnorm=I=-13:TP=-1 \
  -movflags +faststart -c:a libfdk_aac -ar 48000 -b:a 384k -c:v libx264 -b:v 18M \
  -profile:v high -g 25 -bf 2 -b_strategy 2 -refs 8 -me_method umh -me_range 128 \
  -f mp4 $OUTPUT_VIDEO
